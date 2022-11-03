@@ -15,6 +15,7 @@
     <description>spring-webflux</description>
     <properties>
         <java.version>18</java.version>
+        <blockhound.version>1.0.6.RELEASE</blockhound.version>
     </properties>
     <dependencies>
 <!--        <dependency>-->
@@ -24,6 +25,12 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-webflux</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.projectreactor.tools</groupId>
+            <artifactId>blockhound-junit-platform</artifactId>
+            <version>${blockhound.version}</version>
+            <scope>test</scope>
         </dependency>
 
         <dependency>
