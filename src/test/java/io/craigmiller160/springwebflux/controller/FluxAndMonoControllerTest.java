@@ -67,7 +67,9 @@ public class FluxAndMonoControllerTest {
         StepVerifier.create(response)
                 .expectNext(1, 2, 3, 4, 5)
                 .verifyComplete();
-        // TODO verify the json
+
+        callEndpoint("/flux-delay")
+                .expectBody().json("[1,2,3,4,5]");
     }
 
 
