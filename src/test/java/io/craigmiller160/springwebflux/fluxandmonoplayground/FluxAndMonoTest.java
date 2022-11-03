@@ -41,4 +41,13 @@ public class FluxAndMonoTest {
                 .expectNext("Reactive Spring")
                 .verifyErrorMatches(ex -> ex instanceof RuntimeException && ex.getMessage().equals("FooBar"));
     }
+
+    @Test
+    public void fluxTestElementsCount() {
+        final Flux<String> stringFlux = Flux.just("Spring", "Spring Boot", "Reactive Spring")
+                .log();
+        StepVerifier.create(stringFlux)
+                .expectNextCount(3)
+                .verifyComplete();
+    }
 }
