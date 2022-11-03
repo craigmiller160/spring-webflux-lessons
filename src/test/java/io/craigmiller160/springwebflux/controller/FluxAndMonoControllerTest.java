@@ -5,6 +5,7 @@ import lombok.SneakyThrows;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -19,31 +20,44 @@ import static org.hamcrest.Matchers.contains;
 
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
-@AutoConfigureMockMvc
+@AutoConfigureWebTestClient(timeout = "36000")
 @RequiredArgsConstructor(onConstructor = @__({@Autowired}))
 public class FluxAndMonoControllerTest {
     private final WebTestClient webTestClient;
 
     @Test
     @SneakyThrows
-    public void test_returnFlux_testAsFlux() {
-        final Flux<Integer> response = webTestClient.get()
-                .uri("/flux")
-                .exchange()
-                .expectStatus().isOk()
+    public void test_returnFlux() {
+        final Flux<Integer> response = callEndpoint("/flux")
                 .returnResult(Integer.class)
                 .getResponseBody();
         StepVerifier.create(response)
                 .expectNext(1, 2, 3, 4, 5)
                 .verifyComplete();
+
+        callEndpoint("/flux")
+                .expectBody().json("[1,2,3,4,5]");
+    }
+
+    private WebTestClient.ResponseSpec callEndpoint(final String uri) {
+        return webTestClient.get()
+                .uri(uri)
+                .exchange()
+                .expectStatus().isOk();
     }
 
     @Test
-    public void test_returnFlux_testAsJson() {
-        webTestClient.get()
-                .uri("/flux")
-                .exchange()
-                .expectStatus().isOk()
+    public void test_returnFluxDelay() {
+        final Flux<Integer> response = callEndpoint("/flux-delay")
+                .returnResult(Integer.class)
+                .getResponseBody();
+        StepVerifier.create(response)
+                .expectNext(1, 2, 3, 4, 5)
+                .verifyComplete();
+
+        callEndpoint("/flux-delay")
                 .expectBody().json("[1,2,3,4,5]");
     }
+
+
 }
