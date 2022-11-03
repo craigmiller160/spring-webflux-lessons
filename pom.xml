@@ -14,7 +14,7 @@
     <name>spring-webflux</name>
     <description>spring-webflux</description>
     <properties>
-        <java.version>18</java.version>
+        <java.version>17</java.version>
         <blockhound.version>1.0.6.RELEASE</blockhound.version>
     </properties>
     <dependencies>
