@@ -17,6 +17,8 @@ import reactor.core.publisher.Flux;
 import reactor.test.StepVerifier;
 
 import static org.hamcrest.Matchers.contains;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
@@ -68,8 +70,13 @@ public class FluxAndMonoControllerTest {
                 .expectNext(1, 2, 3, 4, 5)
                 .verifyComplete();
 
-        callEndpoint("/flux-delay")
-                .expectBody().json("[1,2,3,4,5]");
+        final byte[] responseBytes = callEndpoint("/flux-delay-stream")
+                .expectBody()
+                .returnResult()
+                .getResponseBody();
+        assertNotNull(responseBytes);
+        final String expected = "1\n2\n3\n4\n5\n";
+        assertEquals(expected, new String(responseBytes));
     }
 
 

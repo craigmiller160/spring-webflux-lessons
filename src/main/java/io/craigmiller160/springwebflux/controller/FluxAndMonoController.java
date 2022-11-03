@@ -18,14 +18,14 @@ public class FluxAndMonoController {
     @GetMapping("/flux-delay")
     public Flux<Integer> returnFluxDelay() {
         return Flux.just(1,2,3,4,5)
-                .delayElements(Duration.ofSeconds(1))
+                .delayElements(Duration.ofMillis(300))
                 .log();
     }
 
     @GetMapping(value = "/flux-delay-stream", produces = MediaType.APPLICATION_NDJSON_VALUE)
     public Flux<Integer> returnFluxDelayStream() {
         return Flux.just(1,2,3,4,5)
-                .delayElements(Duration.ofSeconds(1))
+                .delayElements(Duration.ofMillis(300))
                 .log();
     }
 }
