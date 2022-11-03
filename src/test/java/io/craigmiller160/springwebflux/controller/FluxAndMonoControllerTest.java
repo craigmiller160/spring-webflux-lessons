@@ -74,5 +74,15 @@ public class FluxAndMonoControllerTest {
         assertEquals(expected, new String(responseBytes));
     }
 
+    @Test
+    public void test_badBlockingFlux() {
+        final Flux<Integer> response = callEndpoint("/bad-blocking-flux")
+                .returnResult(Integer.class)
+                .getResponseBody();
+        StepVerifier.create(response)
+                .expectNext(1, 2, 3, 4, 5)
+                .verifyComplete();
+    }
+
 
 }
