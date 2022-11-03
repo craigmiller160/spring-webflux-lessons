@@ -8,9 +8,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.test.web.reactive.server.WebTestClient;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+import reactor.core.publisher.Flux;
+import reactor.test.StepVerifier;
 
 import static org.hamcrest.Matchers.contains;
 
@@ -19,13 +22,19 @@ import static org.hamcrest.Matchers.contains;
 @AutoConfigureMockMvc
 @RequiredArgsConstructor(onConstructor = @__({@Autowired}))
 public class FluxAndMonoControllerTest {
-    private final MockMvc mockMvc;
+    private final WebTestClient webTestClient;
 
     @Test
     @SneakyThrows
     public void test_returnFlux() {
-        mockMvc.perform(MockMvcRequestBuilders.get("/flux"))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.[*]", contains(1,2,3,4,5)));
+        final Flux<Integer> response = webTestClient.get()
+                .uri("/flux")
+                .exchange()
+                .expectStatus().isOk()
+                .returnResult(Integer.class)
+                .getResponseBody();
+        StepVerifier.create(response)
+                .expectNext(1, 2, 3, 4, 5)
+                .verifyComplete();
     }
 }
