@@ -26,7 +26,7 @@ public class FluxAndMonoControllerTest {
 
     @Test
     @SneakyThrows
-    public void test_returnFlux() {
+    public void test_returnFlux_testAsFlux() {
         final Flux<Integer> response = webTestClient.get()
                 .uri("/flux")
                 .exchange()
@@ -36,5 +36,14 @@ public class FluxAndMonoControllerTest {
         StepVerifier.create(response)
                 .expectNext(1, 2, 3, 4, 5)
                 .verifyComplete();
+    }
+
+    @Test
+    public void test_returnFlux_testAsJson() {
+        webTestClient.get()
+                .uri("/flux")
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody().json("[1,2,3,4,5]");
     }
 }
