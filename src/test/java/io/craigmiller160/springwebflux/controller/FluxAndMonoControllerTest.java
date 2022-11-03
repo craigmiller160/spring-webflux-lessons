@@ -59,5 +59,16 @@ public class FluxAndMonoControllerTest {
                 .expectBody().json("[1,2,3,4,5]");
     }
 
+    @Test
+    public void test_returnFluxDelayStream() {
+        final Flux<Integer> response = callEndpoint("/flux-delay-stream")
+                .returnResult(Integer.class)
+                .getResponseBody();
+        StepVerifier.create(response)
+                .expectNext(1, 2, 3, 4, 5)
+                .verifyComplete();
+        // TODO verify the json
+    }
+
 
 }
